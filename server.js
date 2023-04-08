@@ -3,6 +3,7 @@ const express = require("express");
 const app = express();
 const reqLogger = require("./middleware/reqLogger");
 const cookieParser = require("cookie-parser");
+const errorHandler = require("./middleware/errorHandler");
 
 // ********* Middlewares *********
 
@@ -25,10 +26,11 @@ app.use(cookieParser());
 // ********* Routes *********
 
 app.all("*", (req, res) => {
-  res.status(404).json({ message: "404 not found" });
+  res.status(404).json({ error: "404 not found" });
 });
 
 // ********* Custom Error Handlers *********
+app.use(errorHandler);
 
 // ********* Running server *********
 const PORT = process.env.PORT || 3500;
