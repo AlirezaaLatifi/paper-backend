@@ -4,15 +4,16 @@ const app = express();
 const reqLogger = require("./middleware/reqLogger");
 const cookieParser = require("cookie-parser");
 const errorHandler = require("./middleware/errorHandler");
+const cors = require("cors");
+const corsOptions = require("./config/corsOptions");
 
 // ********* Middlewares *********
 
 // logger
 app.use(reqLogger);
 
-// credentials
-
 // cors
+app.use(cors(corsOptions));
 
 // urlencoded
 app.use(express.urlencoded({ extended: false }));
