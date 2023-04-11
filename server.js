@@ -25,7 +25,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 // ********* Routes *********
-
+app.use("/register", require("./routes/register"));
 app.use("/books", require("./routes/api/books"));
 
 app.all("*", (req, res) => {
