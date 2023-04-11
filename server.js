@@ -29,7 +29,7 @@ app.use(cookieParser());
 app.use("/books", require("./routes/api/books"));
 
 app.all("*", (req, res) => {
-  res.status(404).json({ error: "404 not found" });
+  res.status(404).json({ message: "404 not found" });
 });
 
 // ********* Custom Error Handlers *********
