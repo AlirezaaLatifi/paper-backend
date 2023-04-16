@@ -4,6 +4,7 @@ const app = express();
 const reqLogger = require("./middleware/reqLogger");
 const cookieParser = require("cookie-parser");
 const errorHandler = require("./middleware/errorHandler");
+const credentials = require("./middleware/credentials");
 const cors = require("cors");
 const corsOptions = require("./config/corsOptions");
 const verifyJWT = require("./middleware/verifyJWT");
@@ -12,6 +13,9 @@ const verifyJWT = require("./middleware/verifyJWT");
 
 // logger
 app.use(reqLogger);
+
+// credentials
+app.use(credentials);
 
 // cors
 app.use(cors(corsOptions));

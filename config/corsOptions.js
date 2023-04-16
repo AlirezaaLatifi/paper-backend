@@ -1,8 +1,8 @@
-const whiteList = ["https://www.mywebsite1.com", "https://www.mywebsite2.com"];
+const whiteList = require("./whitList");
 
 const corsOptions = {
-  origin: function (origin, callback) {
-    if (whiteList.indexOf(origin) !== -1 || !origin) {
+  origin: function (reqOrigin, callback) {
+    if (whiteList.indexOf(reqOrigin) !== -1 || !reqOrigin) {
       callback(null, true);
     } else {
       callback(new Error("Not allowed by CORS"));
