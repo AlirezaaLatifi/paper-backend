@@ -1,5 +1,3 @@
-// TODO: I need to write this file from scratch by myself later.
-
 const { format } = require("date-fns");
 const { v4: uuid } = require("uuid");
 

@@ -6,6 +6,7 @@ const cookieParser = require("cookie-parser");
 const errorHandler = require("./middleware/errorHandler");
 const cors = require("cors");
 const corsOptions = require("./config/corsOptions");
+const verifyJWT = require("./middleware/verifyJWT");
 
 // ********* Middlewares *********
 
@@ -27,6 +28,9 @@ app.use(cookieParser());
 // ********* Routes *********
 app.use("/register", require("./routes/register"));
 app.use("/auth", require("./routes/auth"));
+app.use("/refresh", require("./routes/refresh"));
+
+app.use(verifyJWT);
 app.use("/books", require("./routes/api/books"));
 
 app.all("*", (req, res) => {
