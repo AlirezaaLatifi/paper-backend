@@ -36,6 +36,7 @@ app.use("/refresh", require("./routes/refresh"));
 app.use("/logout", require("./routes/logout"));
 app.use(verifyJWT);
 app.use("/books", require("./routes/api/books"));
+app.use("/papers", require("./routes/api/papers"));
 
 app.all("*", (req, res) => {
   res.status(404).json({ message: "404 not found" });
