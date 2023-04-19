@@ -50,11 +50,12 @@ async function handleLogin(req, res) {
       JSON.stringify(usersDB.users)
     );
 
-    // TODO: add secure:ture and sameSite:'None' in production at the  below cookie's option
     // send response
     res.cookie("jwt", refreshToken, {
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000,
+      secure: true,
+      sameSite: "None",
     });
 
     res.json({ accessToken });

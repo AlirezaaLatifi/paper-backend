@@ -17,8 +17,7 @@ async function handleLogOut(req, res) {
     (user) => user.refreshToken === reqRefreshToken
   );
   if (!foundUser) {
-    // TODO: add secure:ture and sameSite:'None' in production at the  below cookie's option
-    res.clearCookie("jwt", { httpOnly: true });
+    res.clearCookie("jwt", { httpOnly: true, secure: true, sameSite: "None" });
     return res.sendStatus(204);
   }
 
@@ -31,8 +30,8 @@ async function handleLogOut(req, res) {
     path.join(__dirname, "..", "models", "users.json"),
     JSON.stringify(usersDB.users)
   );
-  // TODO: add secure:ture and sameSite:'None' in production at the  below cookie's option
-  res.clearCookie("jwt", { httpOnly: true });
+
+  res.clearCookie("jwt", { httpOnly: true, secure: true, sameSite: "None" });
   res.sendStatus(204);
 }
 
