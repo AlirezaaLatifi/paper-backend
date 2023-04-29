@@ -11,7 +11,7 @@ function getAllBooks(req, res) {
 function getBook(req, res) {
   const book = books.find((book) => book.id === Number(req.params.id));
   if (!book) {
-    res.status(400).json({ message: `Book ID ${req.params.id} not found.` });
+    res.status(400).json({ message: `Book not found.` });
   }
   res.json(book);
 }

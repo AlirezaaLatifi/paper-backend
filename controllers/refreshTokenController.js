@@ -10,14 +10,21 @@ require("dotenv").config();
 
 const handleRefreshToken = (req, res) => {
   const cookies = req.cookies;
-  console.log(cookies);
-  if (!cookies?.jwt) return res.sendStatus(401);
-  const refreshToken = cookies.jwt;
 
+  if (!cookies?.jwt)
+    return res.status(401).json({
+      message: "There is no Refresh token",
+    });
+
+  const refreshToken = cookies.jwt;
   const foundUser = usersDB.users.find(
     (user) => user.refreshToken === refreshToken
   );
-  if (!foundUser) return res.sendStatus(403); //Forbidden
+  if (!foundUser)
+    return res.status(403).json({
+      message: "no user with given refresh token.",
+    });
+
   // evaluate jwt
   jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, payload) => {
     if (err || foundUser.username !== payload.username)
@@ -27,7 +34,9 @@ const handleRefreshToken = (req, res) => {
       process.env.ACCESS_TOKEN_SECRET,
       { expiresIn: "30s" }
     );
-    res.json({ accessToken });
+    res.json({
+      accessToken,
+    });
   });
 };
 

@@ -16,22 +16,26 @@ async function handleLogin(req, res) {
   // check for empty inputs
   if (!username || !pass) {
     return res
-      .status(400)
-      .json({ message: "username and password are required." });
+      .status(400) // bad request
+      .json({ message: "username and password are required" });
   }
-  // check for existance
+  // check for user existance
   const foundUser = usersDB.users.find((user) => user.username === username);
   if (!foundUser) {
-    return res.status(401).json({ message: "user not found." }); //Unauthorized
+    return res
+      .status(401) //Unauthorized
+      .json({
+        message: "user not found.",
+      });
   }
-  // evaluating password
+  // evaluate password
   const isPassMatch = await bcrypt.compare(pass, foundUser.pass);
   if (isPassMatch) {
     // create jwt
     const accessToken = jwt.sign(
       { usename: foundUser.username },
       process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: "50s" }
+      { expiresIn: "10s" }
     );
     const refreshToken = jwt.sign(
       { username: foundUser.username },
@@ -39,12 +43,12 @@ async function handleLogin(req, res) {
       { expiresIn: "5d" }
     );
 
-    // update database
+    // update database by adding refresh token to the currentUser
     const otherUsers = usersDB.users.filter(
       (user) => user.username !== foundUser.username
     );
     const currentUser = { ...foundUser, refreshToken };
-    usersDB.setUsers([...otherUsers, currentUser]);
+    usersDB.setUsers([...otherUsers, currentUser].sort((a, b) => a.id - b.id));
     await fsPromises.writeFile(
       path.join(__dirname, "..", "models", "users.json"),
       JSON.stringify(usersDB.users)
@@ -58,9 +62,15 @@ async function handleLogin(req, res) {
       sameSite: "None",
     });
 
-    res.json({ accessToken });
+    res.json({
+      accessToken,
+    });
   } else {
-    res.sendStatus(401); //Unauthorized
+    res
+      .status(401) //Unauthorized
+      .json({
+        message: "wrong password.",
+      });
   }
 }
 

@@ -7,7 +7,6 @@ function verifyJWT(req, res, next) {
   const reqToken = authHeader.split(" ")[1];
   jwt.verify(reqToken, process.env.ACCESS_TOKEN_SECRET, (err, payload) => {
     if (err) return res.sendStatus(403); //invalid token
-    console.log(`payload: ${payload}`);
     req.user = payload.username;
     next();
   });

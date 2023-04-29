@@ -33,11 +33,9 @@ async function registerNewUser(req, res) {
     usersDB.setUsers([...usersDB.users, newUser]);
     await fsPromises.writeFile(
       path.join(__dirname, "..", "models", "users.json"),
-      "\n" + JSON.stringify(usersDB.users)
+      JSON.stringify(usersDB.users)
     );
-    res.status(201).json({
-      message: `${username}' is registered.`,
-    });
+    res.sendStatus(201);
   } catch (err) {
     throw new Error(err.message);
   }

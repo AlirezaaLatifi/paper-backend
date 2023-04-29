@@ -7,13 +7,20 @@ const DB = {
 };
 
 const fsPromises = require("fs").promises;
-const { json } = require("express");
+const { format } = require("date-fns");
 const path = require("path");
 
 function getAllPapers(req, res) {
+  const responsePapers = DB.papers.map((paper) => {
+    return {
+      ...paper,
+      user: DB.users.find((user) => user.id === paper.userID).username,
+    };
+  });
+
   res.json({
     data: {
-      papers: DB.papers,
+      papers: responsePapers,
     },
   });
 }
@@ -21,7 +28,7 @@ function getAllPapers(req, res) {
 function getUserPapers(req, res) {
   const reqUserID = Number(req.params.id);
   const foundUser = DB.users.find((user) => user.id === reqUserID);
-  if (!foundUser) return res.status(400).json({ message: "wrong userID" });
+  if (!foundUser) return res.status(400).json({ message: "user not found" });
   const foundUserPapers = DB.papers.filter(
     (paper) => paper.userID === foundUser.id
   );
@@ -32,25 +39,27 @@ function getUserPapers(req, res) {
   });
 }
 
-// TODO: add Validation.
+// TODO: Validation.
 async function addPaper(req, res) {
   const paperData = req.body;
   let newPaper;
   if (paperData.type === "white") {
     newPaper = {
       id: DB.papers.length ? DB.papers[DB.papers.length - 1].id + 1 : 1,
-      userID: paperData.userID,
+      userID: DB.users.find((user) => user.username === paperData.username).id,
       type: "white",
       text: paperData.text,
+      createdDate: format(new Date(), "yyyy-MM-dd HH:mm:ss"),
     };
   } else {
     newPaper = {
       id: DB.papers.length ? DB.papers[DB.papers.length - 1].id + 1 : 1,
-      userID: paperData.userID,
+      userID: DB.users.find((user) => user.username === paperData.username).id,
       bookID: paperData.bookID,
-      type: "cut",
+      type: "cuta",
       qoute: paperData.qoute,
       text: paperData.text,
+      createdDate: format(new Date(), "yyyy-MM-dd HH:mm:ss"),
     };
   }
 
@@ -58,10 +67,10 @@ async function addPaper(req, res) {
   DB.setPapers([...DB.papers, newPaper]);
   await fsPromises.writeFile(
     path.join(__dirname, "..", "models", "papers.json"),
-    "\n" + JSON.stringify(DB.papers)
+    JSON.stringify(DB.papers)
   );
 
-  res.status(201).json({ message: "paper is added." });
+  res.sendStatus(201);
 }
 
 async function deletePaper(req, res) {
@@ -69,22 +78,20 @@ async function deletePaper(req, res) {
     (paper) => paper.id === Number(req.params.id)
   );
   if (!foundPaper) {
-    return res
-      .status(400)
-      .json({ message: `Paper ID ${req.params.id} not found.` });
+    return res.status(400).json({ message: `Paper not found.` });
   }
+
+  // updating database
   const newPapers = DB.papers.filter(
     (paper) => paper.id !== Number(req.params.id)
   );
-
-  // updating database
   DB.setPapers(newPapers);
   await fsPromises.writeFile(
     path.join(__dirname, "..", "models", "papers.json"),
-    "\n" + JSON.stringify(DB.papers)
+    JSON.stringify(DB.papers)
   );
 
-  res.status(200).json({ message: "paper removed successfully." });
+  res.sendStatus(204);
 }
 
 async function editePaper(req, res) {
@@ -93,9 +100,7 @@ async function editePaper(req, res) {
   );
 
   if (!foundPaper) {
-    return res
-      .status(400)
-      .json({ message: `Paper ID ${req.params.id} not found.` });
+    return res.status(400).json({ message: `Paper not found.` });
   }
   const updatedPaper = { ...req.body, id: Number(req.params.id) };
   const otherPapers = DB.papers.filter(
@@ -107,9 +112,9 @@ async function editePaper(req, res) {
   DB.setPapers(sortedPapers);
   await fsPromises.writeFile(
     path.join(__dirname, "..", "models", "papers.json"),
-    "\n" + JSON.stringify(DB.papers)
+    JSON.stringify(DB.papers)
   );
-  res.json({ message: "paper is updated." });
+  res.sendStatus(204);
 }
 
 module.exports = {
