@@ -57,7 +57,7 @@ async function addPaper(req, res) {
       id: DB.papers.length ? DB.papers[DB.papers.length - 1].id + 1 : 1,
       userID: DB.users.find((user) => user.username === paperData.username).id,
       bookID: paperData.bookID,
-      bookTitle: paperData.title,
+      bookTitle: paperData.bookTitle,
       type: "cut",
       qoute: paperData.qoute,
       text: paperData.text,
