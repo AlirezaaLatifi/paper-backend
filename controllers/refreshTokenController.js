@@ -32,7 +32,7 @@ const handleRefreshToken = (req, res) => {
     const accessToken = jwt.sign(
       { username: payload.username },
       process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: "30s" }
+      { expiresIn: "2h" }
     );
     res.json({
       accessToken,

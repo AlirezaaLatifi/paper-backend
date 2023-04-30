@@ -16,7 +16,24 @@ function getBook(req, res) {
   res.json(book);
 }
 
+function getSearchedBook(req, res) {
+  const searchedTitle = req.query.title.toLowerCase();
+  console.log(searchedTitle);
+  if (!searchedTitle) return res.sendStatus(400);
+
+  const foundBook = books.find(
+    (book) => book.title.toLocaleLowerCase() === searchedTitle
+  );
+
+  if (!foundBook) {
+    return res.status(404).json({ message: "searched book not found" });
+  }
+
+  res.json({ book: foundBook });
+}
+
 module.exports = {
   getAllBooks,
   getBook,
+  getSearchedBook,
 };

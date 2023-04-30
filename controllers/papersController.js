@@ -42,6 +42,7 @@ function getUserPapers(req, res) {
 // TODO: Validation.
 async function addPaper(req, res) {
   const paperData = req.body;
+  console.log(paperData);
   let newPaper;
   if (paperData.type === "white") {
     newPaper = {
@@ -56,7 +57,8 @@ async function addPaper(req, res) {
       id: DB.papers.length ? DB.papers[DB.papers.length - 1].id + 1 : 1,
       userID: DB.users.find((user) => user.username === paperData.username).id,
       bookID: paperData.bookID,
-      type: "cuta",
+      bookTitle: paperData.title,
+      type: "cut",
       qoute: paperData.qoute,
       text: paperData.text,
       createdDate: format(new Date(), "yyyy-MM-dd HH:mm:ss"),
