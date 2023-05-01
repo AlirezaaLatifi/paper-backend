@@ -47,4 +47,6 @@ app.use(errorHandler);
 
 // ********* Running server *********
 const PORT = process.env.PORT || 3500;
-app.listen(PORT, () => console.log(`server is running on localhost:${PORT}`));
+app.listen(PORT, () =>
+  console.log(`server is running on ${process.env.BASE_URL}:${PORT}`)
+);
