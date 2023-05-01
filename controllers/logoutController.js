@@ -1,12 +1,11 @@
 const usersDB = {
-  users: require("../models/users.json"),
+  users: require(process.env.USERS_DB),
   setUsers: function (data) {
     this.users = data;
   },
 };
 
 const fsPromises = require("fs").promises;
-const path = require("path");
 
 async function handleLogOut(req, res) {
   const cookies = req.cookies;
@@ -32,7 +31,7 @@ async function handleLogOut(req, res) {
   usersDB.setUsers([...otherUsers, currentUser].sort((a, b) => a.id - b.id));
 
   await fsPromises.writeFile(
-    path.join(__dirname, "..", "models", "users.json"),
+    `${__dirname}/${process.env.USERS_DB}`,
     JSON.stringify(usersDB.users)
   );
 

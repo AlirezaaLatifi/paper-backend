@@ -1,5 +1,5 @@
 const usersDB = {
-  users: require("../models/users.json"),
+  users: require(process.env.USERS_DB),
   setUsers: function (data) {
     this.users = data;
   },
@@ -9,7 +9,6 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const fsPromises = require("fs").promises;
-const path = require("path");
 
 async function handleLogin(req, res) {
   const { username, pass } = req.body;
@@ -50,7 +49,7 @@ async function handleLogin(req, res) {
     const currentUser = { ...foundUser, refreshToken };
     usersDB.setUsers([...otherUsers, currentUser].sort((a, b) => a.id - b.id));
     await fsPromises.writeFile(
-      path.join(__dirname, "..", "models", "users.json"),
+      `${__dirname}/${process.env.USERS_DB}`,
       JSON.stringify(usersDB.users)
     );
 

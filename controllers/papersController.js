@@ -1,6 +1,6 @@
 const DB = {
-  users: require("../models/users.json"),
-  papers: require("../models/papers.json"),
+  users: require(process.env.USERS_DB),
+  papers: require(process.env.PAPERS_DB),
   setPapers: function (data) {
     this.papers = data;
   },
@@ -68,7 +68,7 @@ async function addPaper(req, res) {
   // updating database
   DB.setPapers([...DB.papers, newPaper]);
   await fsPromises.writeFile(
-    path.join(__dirname, "..", "models", "papers.json"),
+    `${__dirname}/${process.env.PAPERS_DB}`,
     JSON.stringify(DB.papers)
   );
 
@@ -89,7 +89,7 @@ async function deletePaper(req, res) {
   );
   DB.setPapers(newPapers);
   await fsPromises.writeFile(
-    path.join(__dirname, "..", "models", "papers.json"),
+    `${__dirname}/${process.env.PAPERS_DB}`,
     JSON.stringify(DB.papers)
   );
 
@@ -113,7 +113,7 @@ async function editePaper(req, res) {
   });
   DB.setPapers(sortedPapers);
   await fsPromises.writeFile(
-    path.join(__dirname, "..", "models", "papers.json"),
+    `${__dirname}/${process.env.PAPERS_DB}`,
     JSON.stringify(DB.papers)
   );
   res.sendStatus(204);

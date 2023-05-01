@@ -1,12 +1,11 @@
 const usersDB = {
-  users: require("../models/users.json"),
+  users: require(process.env.USERS_DB),
   setUsers: function (data) {
     this.users = data;
   },
 };
 
 const fsPromises = require("fs").promises;
-const path = require("path");
 const bcrypt = require("bcrypt");
 
 async function registerNewUser(req, res) {
@@ -32,7 +31,7 @@ async function registerNewUser(req, res) {
     };
     usersDB.setUsers([...usersDB.users, newUser]);
     await fsPromises.writeFile(
-      path.join(__dirname, "..", "models", "users.json"),
+      `${__dirname}/${process.env.USERS_DB}`,
       JSON.stringify(usersDB.users)
     );
     res.sendStatus(201);
