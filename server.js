@@ -12,7 +12,7 @@ const verifyJWT = require("./middleware/verifyJWT");
 // ********* Middlewares *********
 
 // logger
-app.use(reqLogger);
+// app.use(reqLogger);
 
 // credentials
 app.use(credentials);
