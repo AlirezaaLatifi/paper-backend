@@ -1,0 +1,10 @@
+{
+  "app": "paper",
+  "port": 7575,
+  "disks": [
+    {
+      "name": "data",
+      "mountTo": "models"
+    }
+  ]
+}
