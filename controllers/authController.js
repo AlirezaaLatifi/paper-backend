@@ -32,7 +32,7 @@ async function handleLogin(req, res) {
   if (isPassMatch) {
     // create jwt
     const accessToken = jwt.sign(
-      { usename: foundUser.username },
+      { username: foundUser.username },
       process.env.ACCESS_TOKEN_SECRET,
       { expiresIn: "2h" }
     );
