@@ -1,7 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const app = express();
-const reqLogger = require("./middleware/reqLogger");
+// const reqLogger = require("./middleware/reqLogger");
 const cookieParser = require("cookie-parser");
 const errorHandler = require("./middleware/errorHandler");
 const credentials = require("./middleware/credentials");
