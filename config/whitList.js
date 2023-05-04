@@ -1,5 +1,5 @@
 const whiteList = [
-  "https://alirezaa-latifi.github.io/paper-frontend",
+  "https://alirezaa-latifi.github.io",
   "http://localhost:5173",
   "http://localhost:4173",
 ];
