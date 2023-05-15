@@ -3,7 +3,7 @@
   "port": 7575,
   "disks": [
     {
-      "name": "data",
+      "name": "my-disk",
       "mountTo": "models"
     }
   ]
