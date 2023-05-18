@@ -1,14 +1,11 @@
-const usersDB = {
-  users: require(process.env.USERS_DB),
-  setUsers: function (data) {
-    this.users = data;
-  },
-};
-
+const fs = require("fs");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
 const handleRefreshToken = (req, res) => {
+  const users = JSON.parse(
+    fs.readFileSync(`${__dirname}/${process.env.USERS_DB}`, "utf8")
+  );
   const cookies = req.cookies;
 
   if (!cookies?.jwt)
@@ -16,10 +13,13 @@ const handleRefreshToken = (req, res) => {
       message: "There is no Refresh token",
     });
 
+  console.log("users", users);
+  console.log("reqjwt", cookies.jwt);
+
   const refreshToken = cookies.jwt;
-  const foundUser = usersDB.users.find(
-    (user) => user.refreshToken === refreshToken
-  );
+  const foundUser = users.find((user) => user.refreshToken === refreshToken);
+  console.log("founduser", foundUser);
+
   if (!foundUser)
     return res.status(403).json({
       message: "no user with given refresh token.",

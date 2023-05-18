@@ -1,16 +1,18 @@
-const usersDB = {
-  users: require(process.env.USERS_DB),
-  setUsers: function (data) {
-    this.users = data;
-  },
-};
-
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const fsPromises = require("fs").promises;
 
 async function handleLogin(req, res) {
+  const usersDB = {
+    users: JSON.parse(
+      await fsPromises.readFile(`${__dirname}/${process.env.USERS_DB}`, "utf8")
+    ),
+    setUsers: function (data) {
+      this.users = data;
+    },
+  };
+
   const { username, pass } = req.body;
   // check for empty inputs
   if (!username || !pass) {
@@ -42,23 +44,31 @@ async function handleLogin(req, res) {
       { expiresIn: "5d" }
     );
 
+    console.log("authRefreshAG", refreshToken);
+
     // update database by adding refresh token to the currentUser
     const otherUsers = usersDB.users.filter(
       (user) => user.username !== foundUser.username
     );
     const currentUser = { ...foundUser, refreshToken };
     usersDB.setUsers([...otherUsers, currentUser].sort((a, b) => a.id - b.id));
-    await fsPromises.writeFile(
-      `${__dirname}/${process.env.USERS_DB}`,
-      JSON.stringify(usersDB.users)
-    );
+    await fsPromises
+      .writeFile(
+        `${__dirname}/${process.env.USERS_DB}`,
+        JSON.stringify(usersDB.users)
+      )
+      .then(() => {
+        console.log("usersAfterRefreshUpdate", usersDB.users);
+      });
 
+    console.log("authRefreshBS", refreshToken);
     // send response
     res.cookie("jwt", refreshToken, {
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000 * 5,
       secure: true,
       sameSite: "None",
+      domain: "paper.iran.liara.run",
     });
 
     res.json({

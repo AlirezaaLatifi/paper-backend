@@ -1,16 +1,18 @@
-const DB = {
-  users: require(process.env.USERS_DB),
-  papers: require(process.env.PAPERS_DB),
-  setPapers: function (data) {
-    this.papers = data;
-  },
-};
-
-const fsPromises = require("fs").promises;
+const fs = require("fs");
+const fsPromises = fs.promises;
 const { format } = require("date-fns");
 const path = require("path");
 
 function getAllPapers(req, res) {
+  const DB = {
+    users: JSON.parse(
+      fs.readFileSync(`${__dirname}/${process.env.USERS_DB}`, "utf8")
+    ),
+    papers: JSON.parse(
+      fs.readFileSync(`${__dirname}/${process.env.PAPERS_DB}`, "utf8")
+    ),
+  };
+
   const responsePapers = DB.papers.map((paper) => {
     return {
       ...paper,
@@ -26,6 +28,15 @@ function getAllPapers(req, res) {
 }
 
 function getUserPapers(req, res) {
+  const DB = {
+    users: JSON.parse(
+      fs.readFileSync(`${__dirname}/${process.env.USERS_DB}`, "utf8")
+    ),
+    papers: JSON.parse(
+      fs.readFileSync(`${__dirname}/${process.env.PAPERS_DB}`, "utf8")
+    ),
+  };
+
   const reqUserID = Number(req.params.id);
   const foundUser = DB.users.find((user) => user.id === reqUserID);
   if (!foundUser) return res.status(400).json({ message: "user not found" });
@@ -41,6 +52,18 @@ function getUserPapers(req, res) {
 
 // TODO: Validation.
 async function addPaper(req, res) {
+  const DB = {
+    users: JSON.parse(
+      await fsPromises.readFile(`${__dirname}/${process.env.USERS_DB}`, "utf8")
+    ),
+    papers: JSON.parse(
+      await fsPromises.readFile(`${__dirname}/${process.env.PAPERS_DB}`, "utf8")
+    ),
+    setPapers: function (data) {
+      this.papers = data;
+    },
+  };
+
   const paperData = req.body;
   console.log(paperData);
   let newPaper;
@@ -76,6 +99,18 @@ async function addPaper(req, res) {
 }
 
 async function deletePaper(req, res) {
+  const DB = {
+    users: JSON.parse(
+      await fsPromises.readFile(`${__dirname}/${process.env.USERS_DB}`, "utf8")
+    ),
+    papers: JSON.parse(
+      await fsPromises.readFile(`${__dirname}/${process.env.PAPERS_DB}`, "utf8")
+    ),
+    setPapers: function (data) {
+      this.papers = data;
+    },
+  };
+
   const foundPaper = DB.papers.find(
     (paper) => paper.id === Number(req.params.id)
   );
@@ -97,6 +132,18 @@ async function deletePaper(req, res) {
 }
 
 async function editePaper(req, res) {
+  const DB = {
+    users: JSON.parse(
+      await fsPromises.readFile(`${__dirname}/${process.env.USERS_DB}`, "utf8")
+    ),
+    papers: JSON.parse(
+      await fsPromises.readFile(`${__dirname}/${process.env.PAPERS_DB}`, "utf8")
+    ),
+    setPapers: function (data) {
+      this.papers = data;
+    },
+  };
+
   const foundPaper = DB.papers.find(
     (paper) => paper.id === Number(req.params.id)
   );

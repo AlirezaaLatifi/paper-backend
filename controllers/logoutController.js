@@ -1,13 +1,15 @@
-const usersDB = {
-  users: require(process.env.USERS_DB),
-  setUsers: function (data) {
-    this.users = data;
-  },
-};
-
 const fsPromises = require("fs").promises;
 
 async function handleLogOut(req, res) {
+  const usersDB = {
+    users: JSON.parse(
+      await fsPromises.readFile(`${__dirname}/${process.env.USERS_DB}`, "utf8")
+    ),
+    setUsers: function (data) {
+      this.users = data;
+    },
+  };
+
   const cookies = req.cookies;
 
   // ? Isn't it better to send 403 with related message.
@@ -20,7 +22,12 @@ async function handleLogOut(req, res) {
 
   // ? Isn't it better to send 403 with related message.
   if (!foundUser) {
-    res.clearCookie("jwt", { httpOnly: true, secure: true, sameSite: "None" });
+    res.clearCookie("jwt", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "None",
+      domain: "paper.iran.liara.run",
+    });
     return res.sendStatus(204);
   }
 
@@ -35,7 +42,12 @@ async function handleLogOut(req, res) {
     JSON.stringify(usersDB.users)
   );
 
-  res.clearCookie("jwt", { httpOnly: true, secure: true, sameSite: "None" });
+  res.clearCookie("jwt", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "None",
+    domain: "paper.iran.liara.run",
+  });
   res.sendStatus(204);
 }
 

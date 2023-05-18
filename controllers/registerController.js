@@ -1,15 +1,18 @@
-const usersDB = {
-  users: require(process.env.USERS_DB),
-  setUsers: function (data) {
-    this.users = data;
-  },
-};
-
 const fsPromises = require("fs").promises;
 const bcrypt = require("bcrypt");
 
 async function registerNewUser(req, res) {
+  const usersDB = {
+    users: JSON.parse(
+      await fsPromises.readFile(`${__dirname}/${process.env.USERS_DB}`, "utf8")
+    ),
+    setUsers: function (data) {
+      this.users = data;
+    },
+  };
+
   const { username, pass } = req.body;
+  console.log("reqbody", username, pass);
   // check for empty inputs
   if (!username || !pass)
     return res
@@ -29,11 +32,16 @@ async function registerNewUser(req, res) {
       username,
       pass: hashedPass,
     };
+    console.log("newuser", newUser);
+
     usersDB.setUsers([...usersDB.users, newUser]);
+    console.log("usersDB.users", usersDB.users);
+
     await fsPromises.writeFile(
       `${__dirname}/${process.env.USERS_DB}`,
       JSON.stringify(usersDB.users)
     );
+
     res.sendStatus(201);
   } catch (err) {
     throw new Error(err.message);
