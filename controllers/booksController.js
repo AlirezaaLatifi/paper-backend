@@ -1,11 +1,7 @@
 const books = require("../models/books.json");
 
 function getAllBooks(req, res) {
-  res.json({
-    data: {
-      books,
-    },
-  });
+  res.json(books);
 }
 
 function getBook(req, res) {
@@ -29,7 +25,7 @@ function getSearchedBook(req, res) {
     return res.status(404).json({ message: "searched book not found" });
   }
 
-  res.json({ book: foundBook });
+  res.json(foundBook);
 }
 
 module.exports = {

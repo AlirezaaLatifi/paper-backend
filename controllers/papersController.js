@@ -20,11 +20,7 @@ function getAllPapers(req, res) {
     };
   });
 
-  res.json({
-    data: {
-      papers: responsePapers,
-    },
-  });
+  res.json(responsePapers);
 }
 
 function getUserPapers(req, res) {
@@ -43,11 +39,7 @@ function getUserPapers(req, res) {
   const foundUserPapers = DB.papers.filter(
     (paper) => paper.userID === foundUser.id
   );
-  res.json({
-    data: {
-      papres: foundUserPapers,
-    },
-  });
+  res.json(foundUserPapers);
 }
 
 // TODO: Validation.

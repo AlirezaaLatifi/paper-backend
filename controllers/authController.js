@@ -71,9 +71,7 @@ async function handleLogin(req, res) {
       domain: "paper.iran.liara.run",
     });
 
-    res.json({
-      accessToken,
-    });
+    res.json(accessToken);
   } else {
     res
       .status(401) //Unauthorized
