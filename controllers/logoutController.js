@@ -26,7 +26,7 @@ async function handleLogOut(req, res) {
       httpOnly: true,
       secure: true,
       sameSite: "None",
-      domain: "paper.iran.liara.run",
+      // domain: "paper.iran.liara.run",
     });
     return res.sendStatus(204);
   }
@@ -46,7 +46,7 @@ async function handleLogOut(req, res) {
     httpOnly: true,
     secure: true,
     sameSite: "None",
-    domain: "paper.iran.liara.run",
+    // domain: "paper.iran.liara.run",
   });
   res.sendStatus(204);
 }

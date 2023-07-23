@@ -10,17 +10,31 @@ function getAllPapers(req, res) {
     ),
     papers: JSON.parse(
       fs.readFileSync(`${__dirname}/${process.env.PAPERS_DB}`, "utf8")
-    ),
+    ).reverse(),
   };
 
-  const responsePapers = DB.papers.map((paper) => {
+  const allPapers = DB.papers.map((paper) => {
     return {
       ...paper,
       user: DB.users.find((user) => user.id === paper.userID).username,
     };
   });
 
-  res.json(responsePapers);
+  const { pageSize, page } = req.query;
+  const [start, end] =
+    page === 1 ? [0, pageSize] : [page * pageSize - pageSize, page * pageSize];
+  const currentPageData = allPapers.slice(start, end);
+
+  const response = {
+    total: DB.papers.length,
+    page,
+    pageSize,
+    hasNextPage: page * pageSize < DB.papers.length,
+    nextPage: Number(page) + 1,
+    data: currentPageData,
+  };
+
+  res.json(response);
 }
 
 function getUserPapers(req, res) {
