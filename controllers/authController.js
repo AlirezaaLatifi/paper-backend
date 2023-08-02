@@ -68,7 +68,7 @@ async function handleLogin(req, res) {
       maxAge: 24 * 60 * 60 * 1000 * 5,
       secure: true,
       sameSite: "None",
-      // domain: "paper.iran.liara.run",
+      domain: "paper.iran.liara.run",
     });
 
     res.json(accessToken);
